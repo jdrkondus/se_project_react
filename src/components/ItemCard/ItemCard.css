@@ -1,0 +1,26 @@
+.card {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  height: 328px;
+  width: 325px;
+  border-radius: 16px;
+  justify-content: center;
+}
+
+.card__title {
+  position: absolute;
+  top: 15px;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 1);
+  color: rgba(0, 0, 0, 0.6);
+  font-family: "Cabinet Grotesk Bold", sans-serif;
+  line-height: 20px;
+}
+
+.card__image {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+}
