@@ -1,0 +1,53 @@
+.modal__container_type_form {
+  max-width: 496px;
+  width: 100%;
+  padding: 28px 28px 36px;
+  margin: 0;
+}
+
+.modal__title {
+  font-family: "Cabinet Grotesk Bold";
+  font-size: 16px;
+  margin-bottom: 28px;
+}
+
+.modal__submit-btn {
+  gap: 12px;
+  border-radius: 4px;
+  padding: 8px 16px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 1);
+  border: none;
+}
+
+.modal__input {
+  display: block;
+  width: 100%;
+  margin-bottom: 24px;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 1);
+}
+
+.modal__fieldset {
+  margin: 0 0 24px;
+  padding: 0;
+  border: none;
+}
+
+.modal__label {
+  font-family: "Cabinet Grotesk Bold";
+  font-size: 16px;
+}
+
+.modal__radio-btn {
+  width: 16px;
+  height: 16px;
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 1);
+}
+
+.modal__radio-label {
+  margin: 0 10px;
+  font-family: "Cabinet Grotesk Bold";
+  font-size: 16px;
+}
