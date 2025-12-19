@@ -17,6 +17,10 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [weatherData, setWeatherData] = useState({ name: "", temp: "0" });
   const [currentTempUnit, setCurrentTempUnit] = useState("F");
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [name, setName] = useState("");
+  const [link, setLink] = useState("");
+  const [weather, setWeather] = useState("");
 
   function handleOpenItemModal(card) {
     setActiveModal("item-modal");
@@ -31,7 +35,17 @@ function App() {
     setActiveModal("");
   }
 
-  function handleSubmit() {
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const newCard = {
+      _id: Date.now(),
+      name,
+      weather,
+      link,
+    };
+
+    setClothingItems((prevItems) => [newCard, ...prevItems]);
     setActiveModal("");
     setSelectedCard({});
   }
@@ -84,24 +98,35 @@ function App() {
           buttonText="Add Clothing"
           name="add-clothing-form"
           onClose={handleCloseModal}
+          handleSubmit={handleSubmit}
+          isFormValid={isFormValid}
+          setIsFormValid={setIsFormValid}
         >
           <fieldset className="modal__fieldset">
             <label htmlFor="add-clothing-name" className="modal__label">
               Name
               <input
                 id="add-clothing-name"
+                name="name"
                 type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="modal__input"
                 placeholder="Name"
+                required
               />
             </label>
             <label className="modal__label" htmlFor="add-clothing-image">
               Image
               <input
                 id="add-clothing-image"
+                name="link"
                 type="url"
+                value={link}
+                onChange={(e) => setLink(e.target.value)}
                 className="modal__input"
                 placeholder="Image URL"
+                required
               />
             </label>
           </fieldset>
@@ -115,6 +140,7 @@ function App() {
                 id="hot"
                 name="weather"
                 value="hot"
+                onChange={(e) => setWeather(e.target.value)}
               />
               <label className="modal__radio-label" htmlFor="hot">
                 Hot
@@ -128,6 +154,7 @@ function App() {
                 id="warm"
                 name="weather"
                 value="warm"
+                onChange={(e) => setWeather(e.target.value)}
               />
               <label className="modal__radio-label" htmlFor="warm">
                 Warm
@@ -141,6 +168,7 @@ function App() {
                 id="cold"
                 name="weather"
                 value="cold"
+                onChange={(e) => setWeather(e.target.value)}
               />
               <label className="modal__radio-label" htmlFor="cold">
                 Cold

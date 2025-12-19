@@ -15,9 +15,17 @@
   gap: 12px;
   border-radius: 4px;
   padding: 8px 16px;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 1);
   color: rgba(255, 255, 255, 1);
   border: none;
+}
+
+.modal__submit-btn:disabled {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.modal__submit-btn:hover {
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .modal__input {
@@ -44,6 +52,7 @@
   height: 16px;
   padding: 10px;
   border: 1px solid rgba(0, 0, 0, 1);
+  border-radius: 50%;
 }
 
 .modal__radio-label {

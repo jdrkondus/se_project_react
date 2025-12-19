@@ -12,6 +12,10 @@
   z-index: 0;
 }
 
+.toggle-switch:hover {
+  border: 2px solid rgba(0, 0, 0, 1);
+}
+
 .toggle-switch_checkbox {
   visibility: hidden;
   position: absolute;
