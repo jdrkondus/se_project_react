@@ -1,0 +1,25 @@
+.clothes-section {
+  font-family: "Cabinet Grotesk Bold";
+  font-size: 20px;
+}
+
+.clothes-section__row {
+  display: flex;
+  gap: 20px;
+}
+
+.clothes-section__btn {
+  background-color: transparent;
+  border: none;
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 16px;
+}
+
+.clothes-section__card-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}

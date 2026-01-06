@@ -47,6 +47,16 @@
 
 .modal__text {
   margin: 12px 32px;
+  font-size: 20px;
+}
+
+.modal__delete-btn {
+  position: absolute;
+  bottom: 43px;
+  right: 33px;
+  color: rgba(255, 77, 0, 1);
+  background: transparent;
+  border: none;
 }
 
 .modal__footer {

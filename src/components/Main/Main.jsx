@@ -1,16 +1,11 @@
 import "../Main/Main.css";
+import { useContext } from "react";
 
 import WeatherCard from "../WeatherCard/WeatherCard.jsx";
 import ItemCard from "../ItemCard/ItemCard.jsx";
 import CurrentTemperatureUnitContext from "../../contexts/CurrentTemperatureUnitContext.js";
-import { useContext } from "react";
 
-function Main({
-  clothingItems,
-  handleOpenItemModal,
-  handleCloseItemModal,
-  weatherData,
-}) {
+function Main({ clothingItems, handleOpenItemModal, weatherData }) {
   const contextValue = useContext(CurrentTemperatureUnitContext);
 
   return (

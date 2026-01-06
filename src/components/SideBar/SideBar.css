@@ -1,0 +1,17 @@
+.sidebar {
+  min-width: 229px;
+}
+
+.sidebar__row {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.sidebar__avatar {
+}
+
+.sidebar__username {
+  font-family: "Cabinet Grotesk Bold";
+  font-size: 20px;
+}
