@@ -8,6 +8,8 @@ function RegisterModal({
   handleSubmit,
   isFormValid,
   setIsFormValid,
+  handleOpenLoginModal,
+  handleOpenRegisterModal,
 }) {
   const { values, handleChange } = useForm({
     email: "",
@@ -46,6 +48,9 @@ function RegisterModal({
       handleSubmit={onSubmit}
       isFormValid={isFormValid}
       setIsFormValid={setIsFormValid}
+      handleOpenLoginModal={handleOpenLoginModal}
+      handleOpenRegisterModal={handleOpenRegisterModal}
+      onClick={handleOpenLoginModal}
     >
         <div className="register-modal">
       <fieldset className="modal__fieldset">

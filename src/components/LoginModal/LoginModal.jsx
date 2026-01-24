@@ -9,6 +9,8 @@ function LoginModal({
   handleSubmit: onLoginClick,
   isFormValid,
   setIsFormValid,
+  handleOpenRegisterModal,
+  handleOpenLoginModal,
 }) {
   const { values, handleChange, errors, setErrors } = useForm({
     email: "",
@@ -40,6 +42,9 @@ function onSubmit(event) {
       handleSubmit={onSubmit}
       isFormValid={isFormValid}
       setIsFormValid={setIsFormValid}
+      handleOpenRegisterModal={handleOpenRegisterModal}
+      handleOpenLoginModal={handleOpenLoginModal}
+      onClick={handleOpenRegisterModal}
     >
       
       <div className="login-modal">

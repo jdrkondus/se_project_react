@@ -1,5 +1,6 @@
 import "./ModalWithForm.css";
 
+
 function ModalWithForm({
   isOpen,
   children,
@@ -11,6 +12,8 @@ function ModalWithForm({
   onClose,
   isFormValid,
   setIsFormValid,
+  handleOpenLoginModal,
+  handleOpenRegisterModal,
   
 }) {
   return (
@@ -39,9 +42,9 @@ function ModalWithForm({
           </button>
 
                <button
-            type="submit"
+            type="button"
             className="modal__second-btn"
-            disabled={!isFormValid}
+            onClick={name === "login-form" ? handleOpenRegisterModal : handleOpenLoginModal}
           >
             {secondButtonText}
           </button>

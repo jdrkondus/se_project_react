@@ -27,6 +27,14 @@ function App() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const handleOpenLoginModal = () => {
+    setActiveModal("login-modal");
+  };
+
+  const handleOpenRegisterModal = () => {
+    setActiveModal("register-modal");
+  };  
+
 
   function handleOpenItemModal(card) {
     setActiveModal("item-modal");
@@ -157,6 +165,7 @@ function App() {
                 handleOpenItemModal={handleOpenItemModal}
                 onClose={handleCloseModal}
                 weatherData={weatherData}
+                handleOpenLoginModal={handleOpenLoginModal}
               />} />  
               
              <Route
@@ -167,6 +176,7 @@ function App() {
                 handleOpenItemModal={handleOpenItemModal}
                 onClose={handleCloseModal}
                 weatherData={weatherData}
+                handleOpenRegisterModal={handleOpenRegisterModal}
               />} />
         </Routes>
 
@@ -190,6 +200,7 @@ function App() {
           handleSubmit={handleSubmit}
           isFormValid={isFormValid}
           setIsFormValid={setIsFormValid}
+          handleOpenRegisterModal={handleOpenRegisterModal}
         />
         <RegisterModal
           isOpen={activeModal === "register-modal"}
@@ -197,6 +208,7 @@ function App() {
           handleSubmit={handleSubmit}
           isFormValid={isFormValid}
           setIsFormValid={setIsFormValid}
+          handleOpenLoginModal={handleOpenLoginModal}
         />
      
       </div>
