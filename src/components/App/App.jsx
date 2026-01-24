@@ -78,9 +78,12 @@ function App() {
   useEffect(() => {
     getItems()
       .then((items) => {
-        setClothingItems(items);
+      setClothingItems(items);
       })
-      .catch(console.error);
+      .catch((err) => {
+      console.error(err);
+      setClothingItems([]);
+      });
   }, []);
 
   return (
@@ -96,6 +99,17 @@ function App() {
         <Routes>
           <Route
             path="/"
+            element={
+              <Main
+                clothingItems={clothingItems}
+                handleOpenItemModal={handleOpenItemModal}
+                onClose={handleCloseModal}
+                weatherData={weatherData}
+              />
+            }
+          />
+          <Route
+            path="/items"
             element={
               <Main
                 clothingItems={clothingItems}
