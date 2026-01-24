@@ -5,7 +5,7 @@ import Logo from "../../assets/logo.svg";
 import Avatar from "../../assets/avatar.svg";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
 
-function Header({ handleOpenAddClothingModal, weatherData }) {
+function Header({ isLoggedIn, onLoginClick, onRegisterClick, handleOpenAddClothingModal, weatherData }) {
   const now = new Date();
   const dateStr = now.toLocaleDateString("default", {
     month: "long",
@@ -27,10 +27,23 @@ function Header({ handleOpenAddClothingModal, weatherData }) {
         </div>
         <div className="header__side">
           <ToggleSwitch />
+                {!isLoggedIn ? (
+            <>
+            <button onClick={onRegisterClick} className="header__btn">
+                Sign Up
+              </button>
+              <button onClick={onLoginClick} className="header__btn">
+                Log in
+              </button>
+              
+            </>
+          ) : (
+            <>
           <button
             onClick={handleOpenAddClothingModal}
-            className="header__add-clothing-btn"
+            className="header__btn"
           >
+            
             + Add Clothes
           </button>
           <Link className="header__link" to="/profile">
@@ -41,6 +54,8 @@ function Header({ handleOpenAddClothingModal, weatherData }) {
               className="header__avatar"
             />
           </Link>
+          </>
+          )}
         </div>
       </header>
     </>

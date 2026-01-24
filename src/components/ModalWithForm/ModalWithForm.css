@@ -28,6 +28,14 @@
   background-color: rgba(0, 0, 0, 0.6);
 }
 
+.modal__second-btn {
+  gap: 12px;
+  border-style: none;
+  padding: 8px 16px;
+  background-color: transparent;
+ 
+}
+
 .modal__input {
   display: block;
   width: 100%;
@@ -59,4 +67,18 @@
   margin: 0 10px;
   font-family: "Cabinet Grotesk Bold";
   font-size: 16px;
+}
+.modal-validation {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.modal__error-message {
+  color: #ff4d00;
+  font-size: 16px;
+  font-family: "Cabinet Grotesk Bold";
+  margin-top: -16px;
+  margin-bottom: 16px;
+  line-height: 20px;
 }

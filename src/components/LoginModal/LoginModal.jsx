@@ -1,0 +1,96 @@
+import ModalWithForm from "../ModalWithForm/ModalWithForm.jsx";
+import { useForm } from "../../hooks/useform";
+import { useState } from "react"; 
+import {signIn} from "../../utils/auth.js";
+
+function LoginModal({
+  isOpen,
+  handleCloseModal,
+  handleSubmit: onLoginClick,
+  isFormValid,
+  setIsFormValid,
+}) {
+  const { values, handleChange, errors, setErrors } = useForm({
+    email: "",
+    password: "",
+  });
+  const [serverError, setServerError] = useState("");
+
+function onSubmit(event) {
+  event.preventDefault();
+  setServerError("");
+  signIn(values)
+    .then((data) => {
+      onLoginClick(values);
+    })
+    .catch((err) => {
+      console.error("Login error:", err);
+      setServerError("Email or password is incorrect.");
+    });
+}
+
+  return (
+    <ModalWithForm
+      isOpen={isOpen}
+      title="Log In"
+      buttonText="Log In"
+      secondButtonText=" or Sign Up"
+      name="login-form"
+      onClose={handleCloseModal}
+      handleSubmit={onSubmit}
+      isFormValid={isFormValid}
+      setIsFormValid={setIsFormValid}
+    >
+      
+      <div className="login-modal">
+        <fieldset className="modal__fieldset">
+          <label htmlFor="login-email" className="modal__label">
+            Email
+            <input
+              id="login-email"
+              name="email"
+              type="email"
+              value={values.email}
+              onChange={handleChange}
+              className="modal__input"
+              placeholder="Email"
+              required
+            />
+            {errors.email && (
+              <div className="modal__error-message" >
+                {errors.email}
+              </div>
+            )}
+          </label>
+          <label htmlFor="login-password" className="modal__label">
+            Password
+            <input
+              id="login-password"
+              name="password"
+              type="password"
+              value={values.password}
+              onChange={handleChange}
+              className="modal__input"
+              placeholder="Password"
+              required
+            />
+            {errors.password && (
+              <div className="modal__error-message">
+                {errors.password}
+              </div>
+            )}
+          </label>
+        </fieldset>
+      </div>
+    {serverError && (
+  <div
+    className="modal__error-message"
+  >
+    {serverError}
+  </div>
+)}
+    </ModalWithForm>
+  );
+}
+
+export default LoginModal;
