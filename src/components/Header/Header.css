@@ -30,4 +30,13 @@
 .header__username {
   margin-right: 17px;
   margin-left: 20px;
+  font-family: "Cabinet Grotesk Bold", sans-serif;
+  font-size: 20px;
+}
+
+.header__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #00000080;
 }

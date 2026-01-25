@@ -2,10 +2,15 @@ import "../Header/Header.css";
 import { Link } from "react-router-dom";
 
 import Logo from "../../assets/logo.svg";
-import Avatar from "../../assets/avatar.svg";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
+import { useContext, useState } from "react";
+import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 
-function Header({ isLoggedIn, onLoginClick, onRegisterClick, handleOpenAddClothingModal, weatherData }) {
+
+function Header({ isLoggedIn, onLoginClick, onRegisterClick, handleOpenAddClothingModal,weatherData }) {
+ 
+  const currentUser=useContext(CurrentUserContext);
+
   const now = new Date();
   const dateStr = now.toLocaleDateString("default", {
     month: "long",
@@ -46,19 +51,20 @@ function Header({ isLoggedIn, onLoginClick, onRegisterClick, handleOpenAddClothi
             
             + Add Clothes
           </button>
-          <Link className="header__link" to="/profile">
-            <p className="header__username">Terrence Tegegne</p>
-            <img
-              src={Avatar}
-              alt="Terrence Avatar"
-              className="header__avatar"
-            />
-          </Link>
+        <Link className="header__link" to="/profile">
+          <p className="header__username">{currentUser?.data?.name}</p>
+          <img
+            src={
+              currentUser?.data?.avatar || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}
+            alt={`${currentUser?.data?.name} avatar`}
+            className="header__avatar"
+          />
+        </Link>
           </>
-          )}
-        </div>
-      </header>
-    </>
+        )}
+      </div>
+    </header>
+  </>
   );
 }
 

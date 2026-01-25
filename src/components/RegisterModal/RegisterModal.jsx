@@ -1,41 +1,27 @@
 import ModalWithForm from "../ModalWithForm/ModalWithForm.jsx";
 import { useForm } from "../../hooks/useform";
 import {signUp} from "../../utils/auth.js";
+import {signIn} from "../../utils/auth.js";
 
 function RegisterModal({
   isOpen,
   handleCloseModal,
-  handleSubmit,
+  handleRegister,
   isFormValid,
   setIsFormValid,
   handleOpenLoginModal,
   handleOpenRegisterModal,
 }) {
-  const { values, handleChange } = useForm({
+  const { values, handleChange, errors } = useForm({
     email: "",
     password: "",
     name: "",
     avatar: "",
   });
-
-  function onSubmit(e) {
-    console.log("Form submitted!");
-    e.preventDefault();
-    signUp(values)
-      .then((data) => {
-        console.log("User registered:", data);
-        handleSubmit(values);
-      }).then(() => {
-        signIn({email: values.email, password: values.password})
-          .then((data) => {
-            console.log("User logged in after registration:", data);
-            handleSubmit({email: values.email, password: values.password});
-          })
-      })
-      .catch((err) => {
-        console.error("Registration error:", err);
-      });
-  }
+function onSubmit(e) {
+  e.preventDefault();
+  handleRegister(values)
+}
 
   return (
     <ModalWithForm
@@ -66,6 +52,11 @@ function RegisterModal({
             placeholder="Email"
             required
           />
+           {errors.email && (
+              <div className="modal__error-message">
+                {errors.email}
+              </div>
+            )}
         </label>
            <label htmlFor="register-password" className="modal__label">
           Password
@@ -79,6 +70,11 @@ function RegisterModal({
             placeholder="Password"
             required
           />
+           {errors.password && (
+              <div className="modal__error-message">
+                {errors.password}
+              </div>
+            )}
         </label>
            <label htmlFor="register-name" className="modal__label">
           Name
@@ -92,6 +88,11 @@ function RegisterModal({
             placeholder="Name"
             required
           />
+           {errors.name && (
+              <div className="modal__error-message">
+                {errors.name}
+              </div>
+            )}
         </label>
         <label className="modal__label" htmlFor="register-avatar">
           Avatar URL
@@ -105,6 +106,11 @@ function RegisterModal({
             placeholder="Avatar URL"
             required
           />
+           {errors.avatar && (
+              <div className="modal__error-message">
+                {errors.avatar}
+              </div>
+            )}
         </label>
       </fieldset>
       </div>

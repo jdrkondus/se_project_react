@@ -1,5 +1,7 @@
 import ModalWithForm from "../ModalWithForm/ModalWithForm.jsx";
 import { useForm } from "../../hooks/useform";
+import CurrentUserContext from "../../contexts/CurrentUserContext.js";
+import { useContext } from "react";
 
 function AddItemModal({
   isOpen,
@@ -8,6 +10,7 @@ function AddItemModal({
   isFormValid,
   setIsFormValid,
 }) {
+  const currentUser = useContext(CurrentUserContext);
   const { values, handleChange } = useForm({
     name: "",
     link: "",
@@ -30,6 +33,7 @@ function AddItemModal({
       handleSubmit={onSubmit}
       isFormValid={isFormValid}
       setIsFormValid={setIsFormValid}
+      currentUser={currentUser}
     >
       <fieldset className="modal__fieldset">
         <label htmlFor="add-clothing-name" className="modal__label">

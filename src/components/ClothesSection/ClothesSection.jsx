@@ -5,6 +5,7 @@ function ClothesSection({
   clothingItems,
   handleOpenItemModal,
   handleOpenAddClothingModal,
+  isOwn,
 }) {
   return (
     <section className="clothes-section">
@@ -24,6 +25,7 @@ function ClothesSection({
               key={item._id}
               data={item}
               onCardClick={handleOpenItemModal}
+              isOwn={isOwn}
             />
           );
         })}

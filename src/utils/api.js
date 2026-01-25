@@ -1,25 +1,37 @@
-const baseUrl = "http://localhost:3001";
-const token = localStorage.getItem("jwt");
+import { signOut } from "./auth";
 
-function getItems() {
+const baseUrl = "http://localhost:3001";
+
+function getItems({ token }) {
+  if (!token) {
+    return Promise.reject("No token provided");
+  }
+
   return fetch(`${baseUrl}/items`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `${token}`,
+      "Authorization": `Bearer ${token}`,
     },
   }).then((res) => {
-    return res.ok ? res.json() : Promise.reject(`Error: ${res.status}`);
+    if (res.ok) {
+      return res.json();
+    }
+    // Try to parse error as JSON, fallback to text
+    return res.json().catch(() => res.text()).then((err) => {
+      throw new Error(err);
+    });
   });
 }
 
-function addItem({ name, imageUrl, weather }) {
-  console.log("addItem function called with:", { name, imageUrl, weather });
+function addItem({ name, imageUrl, weather, token }) {
+
+
   return fetch(`${baseUrl}/items`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `${token}`,
+      "Authorization": `Bearer ${token}`,
     },
     body: JSON.stringify({ name, imageUrl, weather }),
   }).then((res) => {
@@ -27,13 +39,12 @@ function addItem({ name, imageUrl, weather }) {
   });
 }
 
-function deleteItem(_id) {
-  console.log("deleteItem function called with:", { _id });
+function deleteItem(_id, token) {
   return fetch(`${baseUrl}/items/${_id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `${token}`,
+      "Authorization": `Bearer ${token}`,
     },
   }).then((res) => {
     return res.ok ? res.json() : Promise.reject(`Error: ${res.status}`);

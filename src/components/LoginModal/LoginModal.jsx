@@ -1,17 +1,20 @@
 import ModalWithForm from "../ModalWithForm/ModalWithForm.jsx";
 import { useForm } from "../../hooks/useform";
-import { useState } from "react"; 
-import {signIn} from "../../utils/auth.js";
+import { useState, useContext } from "react"; 
+import CurrentUserContext from "../../contexts/CurrentUserContext.js";  
+
 
 function LoginModal({
   isOpen,
   handleCloseModal,
-  handleSubmit: onLoginClick,
+  handleSubmit,
   isFormValid,
   setIsFormValid,
   handleOpenRegisterModal,
   handleOpenLoginModal,
+  handleLogin,
 }) {
+  const currentUser = useContext(CurrentUserContext);
   const { values, handleChange, errors, setErrors } = useForm({
     email: "",
     password: "",
@@ -21,9 +24,9 @@ function LoginModal({
 function onSubmit(event) {
   event.preventDefault();
   setServerError("");
-  signIn(values)
-    .then((data) => {
-      onLoginClick(values);
+  handleLogin(values)
+    .then(() => {
+      handleCloseModal();
     })
     .catch((err) => {
       console.error("Login error:", err);
@@ -45,6 +48,8 @@ function onSubmit(event) {
       handleOpenRegisterModal={handleOpenRegisterModal}
       handleOpenLoginModal={handleOpenLoginModal}
       onClick={handleOpenRegisterModal}
+      handleLogin={handleLogin}
+      currentUser={currentUser}
     >
       
       <div className="login-modal">
