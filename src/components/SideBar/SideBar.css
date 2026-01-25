@@ -1,5 +1,10 @@
 .sidebar {
   min-width: 229px;
+  height: 100vh;
+  justify-content: space-between;
+  font-family: "Cabinet Grotesk Bold", sans-serif;
+  font-size: 20px;
+  line-height: 100%;
 }
 
 .sidebar__row {

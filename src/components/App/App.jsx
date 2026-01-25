@@ -21,6 +21,7 @@ import CurrentTemperatureUnitContext from "../../contexts/CurrentTemperatureUnit
 import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 import { signIn, signOut, signUp, validateToken } from "../../utils/auth.js";
 import { use } from "react";
+import { useForm } from "../../hooks/useform.js";
 // import { getCurrentUser, updateUser } from "../../../../se_project_express/controllers/users.js";
 
 function App() {
@@ -37,6 +38,8 @@ function App() {
   const [token, setToken] = useState(() => localStorage.getItem("jwt")); 
   const [registerError, setRegisterError] = useState("");
   const [loginError, setLoginError] = useState("");
+  const [registerModalKey, setRegisterModalKey] = useState(() => Date.now());
+  const [editProfileModalKey, setEditProfileModalKey] = useState(() => Date.now());
 
   const handleOpenLoginModal = () => {
     setActiveModal("login-modal");
@@ -86,23 +89,23 @@ function App() {
   }
 
   async function handleRegister(values) {
-    console.log("Registering user with values:", values);
-    setRegisterError(""); // Clear previous error
+    setRegisterError("");
     try {
       const res = await signUp(values);
       if (res.token) {
-        localStorage.setItem("jwt", res.token); // Save token to localStorage
+        localStorage.setItem("jwt", res.token); 
         setToken(res.token);
         setIsLoggedIn(true);
-        setCurrentUser(res.user); // Use returned user data
+        setCurrentUser(res.user);
         handleCloseModal();
+        setRegisterModalKey(Date.now()); // Use Date.now() for unique key
         navigate("/profile");
       }
       return res.data;
     } catch (err) {
       console.error("Registration error:", err);
       setRegisterError(err);
-      // Do not throw, just handle error in UI
+      throw err;
     }
   }
 
@@ -121,7 +124,7 @@ function App() {
       .catch(console.error);
   }
 
-    function handleUpdateUser(values) {
+  function handleUpdateUser(values) {
     const { name, avatar } = values;
     console.log("UpdateUser called with ", {
       name,
@@ -131,6 +134,7 @@ function App() {
       .then((updatedUserData) => {
         setCurrentUser(updatedUserData);
         setActiveModal("");
+        setEditProfileModalKey(Date.now()); // Use Date.now() for unique key
       })
       .catch(console.error);
   }
@@ -154,12 +158,14 @@ function App() {
 
   function handleLogout() {
     signOut();
-    localStorage.removeItem("jwt"); // Remove token from localStorage
+    localStorage.removeItem("jwt"); 
     setToken(null);
     setIsLoggedIn(false);
     setCurrentUser({});
     navigate("/");
   }
+
+  
 
   useEffect(() => {
     getWeatherData()
@@ -348,6 +354,7 @@ useEffect(() => {
           currentUser={currentUser}
         />
         <RegisterModal
+          key={registerModalKey}
           isOpen={activeModal === "register-modal"}
           handleCloseModal={handleCloseModal}
           isFormValid={isFormValid}
@@ -359,12 +366,12 @@ useEffect(() => {
           currentUser={currentUser}
         />
        <EditProfileModal
+  key={editProfileModalKey}
   isOpen={activeModal === "edit-profile-modal"}
-  onClose={handleCloseModal} // Use 'onClose' to match the Modal props
+  onClose={handleCloseModal} 
   isFormValid={isFormValid}
   setIsFormValid={setIsFormValid}
   currentUser={currentUser}
-  // This maps the function you wrote to the prop the modal calls
   handleEditProfile={handleUpdateUser} 
 />
       </div>

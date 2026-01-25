@@ -1,35 +1,36 @@
-import "./EditProfileModal.css";
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 import { useContext, useState, useEffect } from 'react';
 import ModalWithForm from '../ModalWithForm/ModalWithForm.jsx';
+import { useForm } from "../../hooks/useform";
+
 
 function EditProfileModal({ 
     isOpen, 
     onClose, 
-    handleEditProfile,
     isFormValid, 
-    setIsFormValid
+    setIsFormValid,
+    currentUser,
+    handleEditProfile,
+    editProfileError
 }) {
-  const currentUser = useContext(CurrentUserContext);
-  const [name, setName] = useState(currentUser?.data?.name || '');
-  const [avatar, setAvatar] = useState(currentUser?.data?.avatar || '');
-  
-  function onSubmit(event) {
-    event.preventDefault();
-    handleEditProfile({
-      name,
-      avatar
-    });
-  }
+  const { values, handleChange, errors, setValues } = useForm({
+    name: currentUser?.name || "",
+    avatar: currentUser?.avatar || "",
+  });
 
-  useEffect(() => {
-      if(isOpen) {
-          setName(currentUser?.data?.name || '');
-          setAvatar(currentUser?.data?.avatar || '');
+    useEffect(() => {
+      if (isOpen) {
+        setValues({
+          name:  "",
+          avatar:  "",
+        });
       }
-    }, [isOpen, currentUser])
+    }, [isOpen]);
 
-
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    await handleEditProfile(values);
+  };
 
   return (
     <ModalWithForm
@@ -40,28 +41,46 @@ function EditProfileModal({
       handleSubmit={onSubmit}
       isFormValid={isFormValid}
       setIsFormValid={setIsFormValid}
-        onClose={onClose}
+      onClose={onClose}
     >
-        <label className="modal__label">Name*
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Name"
-        minLength={2}
-        maxLength={30}
-        required
-      />
-      </label>
-      <label className="modal__label">Avatar*
-      <input
-        type="url"
-        value={avatar}
-        onChange={(e) => setAvatar(e.target.value)}
-        placeholder="Avatar URL"
-        required
-      />
-      </label>
+      <fieldset className="modal__fieldset">
+        <label htmlFor="edit-name" className="modal__label">
+          Name
+          <input
+            id="edit-name"
+            name="name"
+            type="text"
+            value={values.name}
+            onChange={handleChange}
+            className="modal__input"
+            placeholder="Name"
+            required
+          />
+          {errors.name && (
+            <div className="modal__error-message">
+              {errors.name}
+            </div>
+          )}
+        </label>
+        <label htmlFor="edit-avatar" className="modal__label">
+          Avatar URL
+          <input
+            id="edit-avatar"
+            name="avatar"
+            type="url"
+            value={values.avatar}
+            onChange={handleChange}
+            className="modal__input"
+            placeholder="Avatar URL"
+            required
+          />
+          {errors.avatar && (
+            <div className="modal__error-message">
+              {errors.avatar}
+            </div>
+          )}
+        </label>
+      </fieldset>
     </ModalWithForm>
   );
 }

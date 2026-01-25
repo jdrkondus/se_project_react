@@ -1,4 +1,5 @@
 import "./SideBar.css";
+import "./../Header/Header.css";
 
 function SideBar({
   handleLogout, 

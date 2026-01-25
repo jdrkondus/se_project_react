@@ -1,7 +1,6 @@
 import ModalWithForm from "../ModalWithForm/ModalWithForm.jsx";
 import { useForm } from "../../hooks/useform";
-import { signUp } from "../../utils/auth.js";
-import { signIn } from "../../utils/auth.js";
+import { useEffect } from "react";
 
 function RegisterModal({
   isOpen,
@@ -12,13 +11,30 @@ function RegisterModal({
   handleOpenLoginModal,
   handleOpenRegisterModal,
   registerError,
+  currentUser,
+  ...props
 }) {
-  const { values, handleChange, errors } = useForm({
+
+  const { values, handleChange, errors, setValues } = useForm({
     email: "",
     password: "",
     name: "",
     avatar: "",
   });
+
+  // Reset form values when modal is opened and not just on mount
+  useEffect(() => {
+    if (isOpen) {
+      setValues({
+        email: "",
+        password: "",
+        name: "",
+        avatar: "",
+      });
+    }
+    // Only reset when modal is opened, not just on key change
+    // eslint-disable-next-line
+  }, [isOpen]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +55,6 @@ function RegisterModal({
       onClick={handleOpenLoginModal}
     >
       <div className="register-modal">
-        {/* Show registration error above the form fields */}
         {registerError && (
           <div className="modal__error-message modal__error-message_global">
             {registerError}
