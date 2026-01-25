@@ -9,15 +9,18 @@ function Profile({
   handleOpenAddClothingModal,
   handleOpenItemModal,
   handleLogout,
-  handleEditProfile,
+  handleOpenEditProfileModal, // <-- use this if that's the correct handler
   weatherData,
+  currentUser,
+  isLoggedIn,
 }) {  
-  const currentUser = useContext(CurrentUserContext);
   return (
     <div className="profile">
       <SideBar
-      handleLogout={handleLogout}
-      handleEditProfile={handleEditProfile}
+        handleLogout={handleLogout}
+        handleOpenEditProfileModal={handleOpenEditProfileModal} // <-- update prop name
+        currentUser={currentUser}
+        isLoggedIn={isLoggedIn}
       />
       <ClothesSection
         clothingItems={clothingItems}

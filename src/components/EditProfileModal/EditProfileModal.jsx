@@ -7,16 +7,26 @@ function EditProfileModal({
     isOpen, 
     onClose, 
     handleEditProfile,
+    isFormValid, 
+    setIsFormValid
 }) {
   const currentUser = useContext(CurrentUserContext);
   const [name, setName] = useState(currentUser?.data?.name || '');
   const [avatar, setAvatar] = useState(currentUser?.data?.avatar || '');
   
-    useEffect(() => {
-        if(isOpen) {
-            setName(currentUser?.data?.name || '');
-            setAvatar(currentUser?.data?.avatar || '');
-        }
+  function onSubmit(event) {
+    event.preventDefault();
+    handleEditProfile({
+      name,
+      avatar
+    });
+  }
+
+  useEffect(() => {
+      if(isOpen) {
+          setName(currentUser?.data?.name || '');
+          setAvatar(currentUser?.data?.avatar || '');
+      }
     }, [isOpen, currentUser])
 
 
@@ -27,7 +37,9 @@ function EditProfileModal({
       title="Edit Profile"
       buttonText="Save changes"
       name="edit-profile-modal"
-      onSubmit={handleEditProfile}
+      handleSubmit={onSubmit}
+      isFormValid={isFormValid}
+      setIsFormValid={setIsFormValid}
         onClose={onClose}
     >
         <label className="modal__label">Name*
@@ -36,6 +48,8 @@ function EditProfileModal({
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Name"
+        minLength={2}
+        maxLength={30}
         required
       />
       </label>

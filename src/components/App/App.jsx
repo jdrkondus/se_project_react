@@ -15,11 +15,13 @@ import Profile from "../Profile/Profile.jsx";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute.jsx";
 
 import { addItem, getItems, deleteItem } from "../../utils/api.js";
+import { updateUserProfile } from "../../utils/auth.js";
 import { getWeatherData } from "../../utils/weatherApi.js";
 import CurrentTemperatureUnitContext from "../../contexts/CurrentTemperatureUnitContext.js";
 import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 import { signIn, signOut, signUp, validateToken } from "../../utils/auth.js";
 import { use } from "react";
+// import { getCurrentUser, updateUser } from "../../../../se_project_express/controllers/users.js";
 
 function App() {
   const location = useLocation();
@@ -32,13 +34,16 @@ function App() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
-  const [token, setToken] = useState(localStorage.getItem("jwt"));
+  const [token, setToken] = useState(() => localStorage.getItem("jwt")); 
+  const [registerError, setRegisterError] = useState("");
+  const [loginError, setLoginError] = useState("");
 
   const handleOpenLoginModal = () => {
     setActiveModal("login-modal");
   };
 
   const handleOpenRegisterModal = () => {
+    setRegisterError(""); // Clear error when opening
     setActiveModal("register-modal");
   };  
 
@@ -58,42 +63,47 @@ function App() {
 
   function handleCloseModal() {
     setActiveModal("");
+    setRegisterError(""); // Clear error when closing
+    setLoginError("");
   }
 
   async function handleLogin(values) {
     try {
       const res = await signIn(values);
       if (res.token) {
-        localStorage.setItem("jwt", res.token);
+        localStorage.setItem("jwt", res.token); // Save token to localStorage
         setToken(res.token);
         setIsLoggedIn(true);
-        setCurrentUser(res.data);
+        setCurrentUser(res.user);
         navigate("/profile");
       }
       return res.data;
     } catch (err) {
       console.error("Login error:", err);
+      setLoginError(err);
       throw err;
     }
   }
-  function handleRegister(values) {
-    return signUp(values)
-    .then((res) => {
-      const token = res.token;
-      localStorage.setItem("jwt", token);
-      setToken(token);
-      console.log("Registration successful:", res);
-      handleCloseModal();
-      navigate("/profile");
-      return handleLogin({ email: values.email, password: values.password });
-      
-    })
-    .catch((err) => {
+
+  async function handleRegister(values) {
+    console.log("Registering user with values:", values);
+    setRegisterError(""); // Clear previous error
+    try {
+      const res = await signUp(values);
+      if (res.token) {
+        localStorage.setItem("jwt", res.token); // Save token to localStorage
+        setToken(res.token);
+        setIsLoggedIn(true);
+        setCurrentUser(res.user); // Use returned user data
+        handleCloseModal();
+        navigate("/profile");
+      }
+      return res.data;
+    } catch (err) {
       console.error("Registration error:", err);
-      throw err;
-    });
-    
-  
+      setRegisterError(err);
+      // Do not throw, just handle error in UI
+    }
   }
 
   function handleSubmit(values) {
@@ -117,7 +127,7 @@ function App() {
       name,
       imageUrl: avatar,
     });
-    updateUser({ name, imageUrl: avatar, token })
+    updateUserProfile({ name, avatar, token })
       .then((updatedUserData) => {
         setCurrentUser(updatedUserData);
         setActiveModal("");
@@ -144,6 +154,7 @@ function App() {
 
   function handleLogout() {
     signOut();
+    localStorage.removeItem("jwt"); // Remove token from localStorage
     setToken(null);
     setIsLoggedIn(false);
     setCurrentUser({});
@@ -185,20 +196,35 @@ useEffect(() => {
   
   if (token) {
 
-    validateToken(token).then((res) => {
-      console.log("Token is valid. User data:", res);
-      if(res) {
-      setCurrentUser(res);
-      setIsLoggedIn(true);
-    }}).catch((err) => {
-      console.error("Token validation error:", err);
-      setCurrentUser({});
-      setIsLoggedIn(false);
-      signOut();
-      setToken(null);
-    });
+    validateToken(token)
+      .then((data) => {
+        if (data) {
+          setCurrentUser(data);
+          setIsLoggedIn(true);
+        }
+      })
+      .catch((err) => {
+        // Only sign out if the error is due to invalid/expired token
+        if (
+          err?.status === 401 ||
+          err?.message === "jwt expired" ||
+          err?.message === "invalid token" ||
+          (typeof err === "string" && err.includes("Error: 401"))
+        ) {
+          setCurrentUser({});
+          setIsLoggedIn(false);
+          signOut();
+          localStorage.removeItem("jwt");
+          if (location.pathname !== "/signin") {
+            navigate("/signin");
+          }
+        } else {
+          // For other errors (e.g., network), do not sign out
+          console.error("Token validation error (not signing out):", err);
+        }
+      });
   }
-}, []);
+}, [token, location.pathname, navigate]);
 
   return (
     <CurrentTemperatureUnitContext.Provider
@@ -324,24 +350,23 @@ useEffect(() => {
         <RegisterModal
           isOpen={activeModal === "register-modal"}
           handleCloseModal={handleCloseModal}
-          handleSubmit={handleSubmit}
           isFormValid={isFormValid}
           setIsFormValid={setIsFormValid}
           handleOpenLoginModal={handleOpenLoginModal}
-          handleLogin={handleLogin}
+          handleOpenRegisterModal={handleOpenRegisterModal}
           handleRegister={handleRegister}
+          registerError={registerError}
           currentUser={currentUser}
         />
-        <EditProfileModal
-          isOpen={activeModal === "edit-profile-modal"}
-          handleCloseModal={handleCloseModal}
-          handleSubmit={handleSubmit}
-          isFormValid={isFormValid}
-          setIsFormValid={setIsFormValid}
-          currentUser={currentUser}
-          handleOpenEditProfileModal={handleOpenEditProfileModal} 
-          handleUpdateUser={handleUpdateUser}
-        />
+       <EditProfileModal
+  isOpen={activeModal === "edit-profile-modal"}
+  onClose={handleCloseModal} // Use 'onClose' to match the Modal props
+  isFormValid={isFormValid}
+  setIsFormValid={setIsFormValid}
+  currentUser={currentUser}
+  // This maps the function you wrote to the prop the modal calls
+  handleEditProfile={handleUpdateUser} 
+/>
       </div>
       </CurrentUserContext.Provider>  
     </CurrentTemperatureUnitContext.Provider>

@@ -55,7 +55,9 @@ function Header({ isLoggedIn, onLoginClick, onRegisterClick, handleOpenAddClothi
           <p className="header__username">{currentUser?.data?.name}</p>
           <img
             src={
-              currentUser?.data?.avatar || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}
+              isLoggedIn && currentUser?.avatar
+    ? currentUser.avatar
+    : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
             alt={`${currentUser?.data?.name} avatar`}
             className="header__avatar"
           />

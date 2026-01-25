@@ -1,7 +1,7 @@
 import ModalWithForm from "../ModalWithForm/ModalWithForm.jsx";
 import { useForm } from "../../hooks/useform";
-import {signUp} from "../../utils/auth.js";
-import {signIn} from "../../utils/auth.js";
+import { signUp } from "../../utils/auth.js";
+import { signIn } from "../../utils/auth.js";
 
 function RegisterModal({
   isOpen,
@@ -11,6 +11,7 @@ function RegisterModal({
   setIsFormValid,
   handleOpenLoginModal,
   handleOpenRegisterModal,
+  registerError,
 }) {
   const { values, handleChange, errors } = useForm({
     email: "",
@@ -18,10 +19,11 @@ function RegisterModal({
     name: "",
     avatar: "",
   });
-function onSubmit(e) {
-  e.preventDefault();
-  handleRegister(values)
-}
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    await handleRegister(values);
+  };
 
   return (
     <ModalWithForm
@@ -34,85 +36,89 @@ function onSubmit(e) {
       handleSubmit={onSubmit}
       isFormValid={isFormValid}
       setIsFormValid={setIsFormValid}
-      handleOpenLoginModal={handleOpenLoginModal}
-      handleOpenRegisterModal={handleOpenRegisterModal}
       onClick={handleOpenLoginModal}
     >
-        <div className="register-modal">
-      <fieldset className="modal__fieldset">
-        <label htmlFor="register-email" className="modal__label">
-          Email
-          <input
-            id="register-email"
-            name="email"
-            type="email"
-            value={values.email}
-            onChange={handleChange}
-            className="modal__input"
-            placeholder="Email"
-            required
-          />
-           {errors.email && (
+      <div className="register-modal">
+        {/* Show registration error above the form fields */}
+        {registerError && (
+          <div className="modal__error-message modal__error-message_global">
+            {registerError}
+          </div>
+        )}
+        <fieldset className="modal__fieldset">
+          <label htmlFor="register-email" className="modal__label">
+            Email
+            <input
+              id="register-email"
+              name="email"
+              type="email"
+              value={values.email}
+              onChange={handleChange}
+              className="modal__input"
+              placeholder="Email"
+              required
+            />
+            {errors.email && (
               <div className="modal__error-message">
                 {errors.email}
               </div>
             )}
-        </label>
-           <label htmlFor="register-password" className="modal__label">
-          Password
-          <input
-            id="register-password"
-            name="password"
-            type="password"
-            value={values.password}
-            onChange={handleChange}
-            className="modal__input"
-            placeholder="Password"
-            required
-          />
-           {errors.password && (
+          </label>
+          <label htmlFor="register-password" className="modal__label">
+            Password
+            <input
+              id="register-password"
+              name="password"
+              type="password"
+              value={values.password}
+              onChange={handleChange}
+              className="modal__input"
+              placeholder="Password"
+              required
+            />
+            {errors.password && (
               <div className="modal__error-message">
                 {errors.password}
               </div>
             )}
-        </label>
-           <label htmlFor="register-name" className="modal__label">
-          Name
-          <input
-            id="register-name"
-            name="name"
-            type="text"
-            value={values.name}
-            onChange={handleChange}
-            className="modal__input"
-            placeholder="Name"
-            required
-          />
-           {errors.name && (
+          </label>
+          <label htmlFor="register-name" className="modal__label">
+            Name
+            <input
+              id="register-name"
+              name="name"
+              type="text"
+              value={values.name}
+              onChange={handleChange}
+              className="modal__input"
+              placeholder="Name"
+              required
+            />
+            {errors.name && (
               <div className="modal__error-message">
                 {errors.name}
               </div>
             )}
-        </label>
-        <label className="modal__label" htmlFor="register-avatar">
-          Avatar URL
-          <input
-            id="register-avatar"
-            name="avatar"
-            type="url"
-            value={values.avatar}
-            onChange={handleChange}
-            className="modal__input"
-            placeholder="Avatar URL"
-            required
-          />
-           {errors.avatar && (
+          </label>
+          <label className="modal__label" htmlFor="register-avatar">
+            Avatar URL
+            <input
+              id="register-avatar"
+              name="avatar"
+              type="url"
+              value={values.avatar}
+              onChange={handleChange}
+              className="modal__input"
+              placeholder="Avatar URL"
+              required
+            />
+            {errors.avatar && (
               <div className="modal__error-message">
                 {errors.avatar}
               </div>
             )}
-        </label>
-      </fieldset>
+          </label>
+        </fieldset>
       </div>
     </ModalWithForm>
   );

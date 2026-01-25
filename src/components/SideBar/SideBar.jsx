@@ -1,15 +1,15 @@
 import "./SideBar.css";
-import CurrentUserContext from "../../contexts/CurrentUserContext";
-import { useContext } from "react";
 
 function SideBar({
- handleLogout, 
+  handleLogout, 
   handleOpenEditProfileModal,
+  currentUser,
   isLoggedIn,
 }) {
-  const currentUser = useContext(CurrentUserContext);
-  const name = isLoggedIn ? currentUser?.name : "Guest";
-  const avatar = isLoggedIn ? currentUser?.avatar : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
+  const name = isLoggedIn && currentUser?.name ? currentUser.name : "Guest";
+  const avatar = isLoggedIn && currentUser?.avatar
+    ? currentUser.avatar
+    : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
 
   return (
     <aside className="sidebar">
