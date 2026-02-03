@@ -1,6 +1,6 @@
 import { signOut } from "./auth";
 
-const baseUrl = "https://api.www.wtwrwardrobe.ufodns.com/";
+const baseUrl = "https://api.www.wtwrwardrobe.ufodns.com";
 
 function getItems({ token }) {
   if (!token) {
