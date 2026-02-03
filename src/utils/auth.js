@@ -33,7 +33,7 @@ function signIn(values) {
 }
 
 function updateUserProfile({ name, avatar, token }) {
-  return fetch(`${baseUrl}/users/me`, {
+  return fetch(`${baseUrl}/profile/me`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -49,7 +49,7 @@ function updateUserProfile({ name, avatar, token }) {
 } 
 
 function validateToken(token) {
-  return fetch(`${baseUrl}/users/me`, {
+  return fetch(`${baseUrl}/profile/me`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
