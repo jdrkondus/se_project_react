@@ -2,6 +2,31 @@ import { signOut } from "./auth";
 
 const baseUrl = "https://api.wtwrwardrobe.ufodns.com";
 
+function getCurrentUser(token) {
+  return fetch(`${baseUrl}/profile/me`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  }).then((res) => {
+    return res.ok ? res.json() : Promise.reject(`Error: ${res.status}`);
+  });
+}
+
+function updateProfile(token, { name, email }) {
+  return fetch(`${baseUrl}/profile/me`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify({ name, email }),
+  }).then((res) => {
+      return res.ok ? res.json(): Promise.reject(`Error: ${res.status}`);
+  });
+    }
+
 function getItems() {
   return fetch(`${baseUrl}/items`, {
     method: "GET",
@@ -48,4 +73,4 @@ function deleteItem(_id, token) {
 
 
 
-export { getItems, addItem, deleteItem, baseUrl };
+export { getItems, addItem, deleteItem, baseUrl, getCurrentUser, updateProfile };

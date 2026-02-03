@@ -14,8 +14,8 @@ import EditProfileModal from "../EditProfileModal/EditProfileModal.jsx";
 import Profile from "../Profile/Profile.jsx";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute.jsx";
 
-import { addItem, getItems, deleteItem } from "../../utils/api.js";
-import { updateUserProfile } from "../../utils/auth.js";
+import { addItem, getItems, deleteItem, getCurrentUser, updateProfile } from "../../utils/api.js";
+import { signIn, signUp, signOut, updateUserProfile } from "../../utils/auth.js";
 import { getWeatherData } from "../../utils/weatherApi.js";
 import CurrentTemperatureUnitContext from "../../contexts/CurrentTemperatureUnitContext.js";
 import CurrentUserContext from "../../contexts/CurrentUserContext.js";
@@ -46,7 +46,7 @@ function App() {
   };
 
   const handleOpenRegisterModal = () => {
-    setRegisterError(""); // Clear error when opening
+    setRegisterError(""); 
     setActiveModal("register-modal");
   };  
 
@@ -66,7 +66,7 @@ function App() {
 
   function handleCloseModal() {
     setActiveModal("");
-    setRegisterError(""); // Clear error when closing
+    setRegisterError(""); 
     setLoginError("");
   }
 
@@ -74,10 +74,12 @@ function App() {
     try {
       const res = await signIn(values);
       if (res.token) {
-        localStorage.setItem("jwt", res.token); // Save token to localStorage
+        localStorage.setItem("jwt", res.token); 
         setToken(res.token);
+        
+        const userData = await getCurrentUser(res.token);
+        setCurrentUser(userData);
         setIsLoggedIn(true);
-        setCurrentUser(res.user);
         navigate("/profile");
       }
       return res.data;
@@ -98,7 +100,7 @@ function App() {
         setIsLoggedIn(true);
         setCurrentUser(res.user);
         handleCloseModal();
-        setRegisterModalKey(Date.now()); // Use Date.now() for unique key
+        setRegisterModalKey(Date.now()); 
         navigate("/profile");
       }
       return res.data;
@@ -130,11 +132,11 @@ function App() {
       name,
       imageUrl: avatar,
     });
-    updateUserProfile({ name, avatar, token })
+    updateProfile(token, { name, avatar })
       .then((updatedUserData) => {
         setCurrentUser(updatedUserData);
         setActiveModal("");
-        setEditProfileModalKey(Date.now()); // Use Date.now() for unique key
+        setEditProfileModalKey(Date.now()); 
       })
       .catch(console.error);
   }
@@ -287,6 +289,7 @@ useEffect(() => {
                 onClose={handleCloseModal}
                 weatherData={weatherData}
                 currentUser={currentUser}
+                updateUserProfile={updateUserProfile}
              />
               </ProtectedRoute>
             }
