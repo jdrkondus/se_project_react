@@ -177,7 +177,7 @@ function App() {
 
   useEffect(() => {
     if(token) {
-      getItems({ token })
+      getItems()
         .then((items) => {
           setClothingItems(items);
         })

@@ -2,16 +2,11 @@ import { signOut } from "./auth";
 
 const baseUrl = "https://api.wtwrwardrobe.ufodns.com";
 
-function getItems({ token }) {
-  if (!token) {
-    return Promise.reject("No token provided");
-  }
-
+function getItems() {
   return fetch(`${baseUrl}/items`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
     },
   }).then((res) => {
     if (res.ok) {
