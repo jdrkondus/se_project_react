@@ -14,7 +14,7 @@
   left: 0;
   right: 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 0 15px;
   z-index: 1;
@@ -29,6 +29,9 @@
   line-height: 20px;
   padding: 2px 12px;
   margin: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .card__like-btn {
@@ -39,34 +42,27 @@
   cursor: pointer;
   font-size: 16px;
   font-family: "Cabinet Grotesk Bold", sans-serif;
-  color: rgba(0, 0, 0, 0.3);
+  color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   transition: all 0.3s;
+  position: absolute;
+  right: 1px;
+  background-color: transparent;
 }
 
 .card__like-btn:hover {
   background-color: rgba(255, 255, 255, 1);
 }
 
-.card__like-btn:hover .card__like-icon {
-  color: rgba(255, 77, 0, 0.5);
-}
-
 .card__like-icon {
-  font-size: 18px;
-  transition: color 0.3s;
+  width: 18px;
+  height: 18px;
+  transition: filter 0.3s;
 }
 
-.card__like-btn_active .card__like-icon {
-  color: rgba(255, 77, 0, 1);
-}
-
-.card__like-btn_active:hover .card__like-icon {
-  color: rgba(255, 77, 0, 0.8);
-}
 
 .card__image {
   width: 100%;
@@ -79,5 +75,5 @@
 .card__likes-count {
   color: rgba(0, 0, 0, 0.6);
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 700;
 }

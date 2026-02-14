@@ -1,4 +1,5 @@
 import "../ItemCard/ItemCard.css";
+import likeBtn from "../../assets/like-btn.svg";
 
 function ItemCard({ data, onCardClick, handleCardLike, currentUser }) {
   const isLiked = data.likes?.some(id => id === currentUser?._id);
@@ -23,7 +24,7 @@ function ItemCard({ data, onCardClick, handleCardLike, currentUser }) {
             onClick={handleLike}
             type="button"
           >
-            <span className="card__like-icon">♥</span>
+            <img src={likeBtn} alt="like" className="card__like-icon" />
             <span className="card__likes-count">{likesCount}</span>
           </button>
         </div>
