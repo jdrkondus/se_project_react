@@ -1,0 +1,53 @@
+.modal__container_type_delete {
+  max-width: 496px;
+  width: 100%;
+  padding: 28px 28px 36px;
+  margin: 0;
+  text-align: center;
+}
+
+.modal__title_type_delete {
+  font-family: "Cabinet Grotesk Bold", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  margin: 0 0 24px;
+  color: rgba(0, 0, 0, 1);
+}
+
+.modal__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal__delete-confirm-btn {
+  border-radius: 4px;
+  padding: 8px 16px;
+  background-color: rgba(255, 77, 0, 1);
+  color: rgba(255, 255, 255, 1);
+  border: none;
+  font-family: "Cabinet Grotesk Bold", sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.modal__delete-confirm-btn:hover {
+  background-color: rgba(255, 77, 0, 0.8);
+}
+
+.modal__cancel-btn {
+  border-radius: 4px;
+  padding: 8px 16px;
+  background-color: transparent;
+  color: rgba(0, 0, 0, 1);
+  border: 1px solid rgba(0, 0, 0, 1);
+  font-family: "Cabinet Grotesk Bold", sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.modal__cancel-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}

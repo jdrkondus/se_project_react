@@ -11,18 +11,18 @@ import AddItemModal from "../AddItemModal/AddItemModal.jsx";
 import LoginModal from "../LoginModal/LoginModal.jsx";
 import RegisterModal from "../RegisterModal/RegisterModal.jsx"; 
 import EditProfileModal from "../EditProfileModal/EditProfileModal.jsx";
+import DeleteConfirmationModal from "../DeleteConfirmationModal/DeleteConfirmationModal.jsx";
 import Profile from "../Profile/Profile.jsx";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute.jsx";
 
-import { addItem, getItems, deleteItem, getCurrentUser, updateProfile } from "../../utils/api.js";
-import { signIn, signUp, signOut, updateUserProfile } from "../../utils/auth.js";
+import { addItem, getItems, deleteItem, getCurrentUser, updateProfile, likeItem, dislikeItem } from "../../utils/api.js";
+import { signIn, signUp, signOut, validateToken, updateUserProfile } from "../../utils/auth.js";
 import { getWeatherData } from "../../utils/weatherApi.js";
 import CurrentTemperatureUnitContext from "../../contexts/CurrentTemperatureUnitContext.js";
 import CurrentUserContext from "../../contexts/CurrentUserContext.js";
-import { signIn, signOut, signUp, validateToken } from "../../utils/auth.js";
 import { use } from "react";
 import { useForm } from "../../hooks/useform.js";
-// import { getCurrentUser, updateUser } from "../../../../se_project_express/controllers/users.js";
+
 
 function App() {
   const location = useLocation();
@@ -38,8 +38,9 @@ function App() {
   const [token, setToken] = useState(() => localStorage.getItem("jwt")); 
   const [registerError, setRegisterError] = useState("");
   const [loginError, setLoginError] = useState("");
-  const [registerModalKey, setRegisterModalKey] = useState(() => Date.now());
-  const [editProfileModalKey, setEditProfileModalKey] = useState(() => Date.now());
+  const [registerModalKey, setRegisterModalKey] = useState(() => `register-${Date.now()}`);
+  const [editProfileModalKey, setEditProfileModalKey] = useState(() => `edit-profile-${Date.now()}`);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   const handleOpenLoginModal = () => {
     setActiveModal("login-modal");
@@ -68,6 +69,7 @@ function App() {
     setActiveModal("");
     setRegisterError(""); 
     setLoginError("");
+    setItemToDelete(null);
   }
 
   async function handleLogin(values) {
@@ -100,7 +102,7 @@ function App() {
         setIsLoggedIn(true);
         setCurrentUser(res.user);
         handleCloseModal();
-        setRegisterModalKey(Date.now()); 
+        setRegisterModalKey(`register-${Date.now()}`); 
         navigate("/profile");
       }
       return res.data;
@@ -120,7 +122,13 @@ function App() {
     });
     addItem({ name, imageUrl: link, weather, token })
       .then((data) => {
-        setClothingItems((prev) => [data, ...prev]);
+        setClothingItems((prev) => {
+          // Check if item already exists to avoid duplicates
+          if (prev.some(item => item._id === data._id)) {
+            return prev;
+          }
+          return [data, ...prev];
+        });
         setActiveModal("");
       })
       .catch(console.error);
@@ -136,18 +144,25 @@ function App() {
       .then((updatedUserData) => {
         setCurrentUser(updatedUserData);
         setActiveModal("");
-        setEditProfileModalKey(Date.now()); 
+        setEditProfileModalKey(`edit-profile-${Date.now()}`); 
       })
       .catch(console.error);
   }
 
   function handleDeleteItem(item) {
-    console.log(item);
-    deleteItem(item._id, token)
-      .then(() => {
-        setClothingItems((prev) => prev.filter((i) => i._id !== item._id));
-      })
-      .catch(console.error);
+    setItemToDelete(item);
+    setActiveModal("delete-confirmation");
+  }
+
+  function confirmDeleteItem() {
+    if (itemToDelete) {
+      deleteItem(itemToDelete._id, token)
+        .then(() => {
+          setClothingItems((prev) => prev.filter((i) => i._id !== itemToDelete._id));
+          handleCloseModal();
+        })
+        .catch(console.error);
+    }
   }
 
   function handleTempUnitChange() {
@@ -167,6 +182,25 @@ function App() {
     navigate("/");
   }
 
+  function handleCardLike(item, isLiked) {
+    if (!isLoggedIn) {
+      navigate("/signin");
+      return;
+    }
+
+    const apiCall = isLiked ? dislikeItem : likeItem;
+    
+    apiCall(item._id, token)
+      .then((updatedItem) => {
+        setClothingItems((prev) =>
+          prev.map((cardItem) => 
+            cardItem._id === item._id ? updatedItem : cardItem
+          )
+        );
+      })
+      .catch(console.error);
+  }
+
   
 
   useEffect(() => {
@@ -178,17 +212,27 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if(token) {
-      getItems()
-        .then((items) => {
-          setClothingItems(items);
-        })
-        .catch((err) => {
-          console.error(err);
-          setClothingItems([]);
-        });
-    }
-  }, [token]);
+    getItems()
+      .then((items) => {
+        // Deduplicate items based on _id
+        const uniqueItems = Array.from(
+          new Map(items.map(item => [item._id, item])).values()
+        );
+        
+        // Debug: Check for duplicates
+        const ids = items.map(i => i._id);
+        const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+        if (duplicates.length > 0) {
+          console.warn('Duplicate IDs found:', duplicates);
+        }
+        
+        setClothingItems(uniqueItems);
+      })
+      .catch((err) => {
+        console.error(err);
+        setClothingItems([]);
+      });
+  }, []);
 
   useEffect(() => {
   if (location.pathname === "/signup") {
@@ -259,6 +303,7 @@ useEffect(() => {
                 handleOpenItemModal={handleOpenItemModal}
                 onClose={handleCloseModal}
                 weatherData={weatherData}
+                handleCardLike={handleCardLike}
               />
             } 
               />
@@ -270,6 +315,7 @@ useEffect(() => {
                 handleOpenItemModal={handleOpenItemModal}
                 onClose={handleCloseModal}
                 weatherData={weatherData}
+                handleCardLike={handleCardLike}
             
               />
             }
@@ -283,7 +329,8 @@ useEffect(() => {
                 clothingItems={clothingItems}
                 handleOpenAddClothingModal={handleOpenAddClothingModal}
                 handleOpenItemModal={handleOpenItemModal}
-                handleOpenEditProfileModal={handleOpenEditProfileModal} 
+                handleOpenEditProfileModal={handleOpenEditProfileModal}
+                handleCardLike={handleCardLike} 
                 handleUpdateUser={handleUpdateUser}
                 handleLogout={handleLogout}
                 onClose={handleCloseModal}
@@ -306,6 +353,7 @@ useEffect(() => {
                 handleOpenLoginModal={handleOpenLoginModal}
                 handleOpenRegisterModal={handleOpenRegisterModal}
                 handleLogin={handleLogin}
+                handleCardLike={handleCardLike}
               
               />} />  
               
@@ -320,6 +368,7 @@ useEffect(() => {
                  handleOpenLoginModal={handleOpenLoginModal}
                 handleOpenRegisterModal={handleOpenRegisterModal}
                 handleLogin={handleLogin}
+                handleCardLike={handleCardLike}
                
               />} />
         </Routes>
@@ -377,6 +426,12 @@ useEffect(() => {
   currentUser={currentUser}
   handleEditProfile={handleUpdateUser} 
 />
+        <DeleteConfirmationModal
+          isOpen={activeModal === "delete-confirmation"}
+          onClose={handleCloseModal}
+          onConfirm={confirmDeleteItem}
+          itemName={itemToDelete?.name}
+        />
       </div>
       </CurrentUserContext.Provider>  
     </CurrentTemperatureUnitContext.Provider>

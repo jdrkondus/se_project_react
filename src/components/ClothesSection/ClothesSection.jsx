@@ -6,6 +6,8 @@ function ClothesSection({
   handleOpenItemModal,
   handleOpenAddClothingModal,
   isOwn,
+  currentUser,
+  handleCardLike,
 }) {
   return (
     <section className="clothes-section">
@@ -26,6 +28,8 @@ function ClothesSection({
               data={item}
               onCardClick={handleOpenItemModal}
               isOwn={isOwn}
+              handleCardLike={handleCardLike}
+              currentUser={currentUser}
             />
           );
         })}

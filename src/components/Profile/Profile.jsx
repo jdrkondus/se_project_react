@@ -13,6 +13,7 @@ function Profile({
   weatherData,
   currentUser,
   isLoggedIn,
+  handleCardLike,
 }) {  
   return (
     <div className="profile">
@@ -28,6 +29,7 @@ function Profile({
         handleOpenItemModal={handleOpenItemModal}
         weatherData={weatherData}
         currentUser={currentUser}
+        handleCardLike={handleCardLike}
       />
     </div>
   );

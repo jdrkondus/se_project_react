@@ -1,6 +1,8 @@
 import { signOut } from "./auth";
 
-const baseUrl = "https://api.wtwrwardrobe.ufodns.com";
+const baseUrl = process.env.NODE_ENV === 'production' 
+  ? "https://api.wtwrwardrobe.ufodns.com" 
+  : "http://localhost:3001";
 
 function getCurrentUser(token) {
   return fetch(`${baseUrl}/profile/me`, {
@@ -71,6 +73,28 @@ function deleteItem(_id, token) {
   });
 }
 
+function likeItem(_id, token) {
+  return fetch(`${baseUrl}/items/${_id}/likes`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+  }).then((res) => {
+    return res.ok ? res.json() : Promise.reject(`Error: ${res.status}`);
+  });
+}
 
+function dislikeItem(_id, token) {
+  return fetch(`${baseUrl}/items/${_id}/likes`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+  }).then((res) => {
+    return res.ok ? res.json() : Promise.reject(`Error: ${res.status}`);
+  });
+}
 
-export { getItems, addItem, deleteItem, baseUrl, getCurrentUser, updateProfile };
+export { getItems, addItem, deleteItem, baseUrl, getCurrentUser, updateProfile, likeItem, dislikeItem };

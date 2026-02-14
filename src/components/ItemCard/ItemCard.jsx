@@ -1,14 +1,32 @@
 import "../ItemCard/ItemCard.css";
 
-function ItemCard({ data, onCardClick }) {
+function ItemCard({ data, onCardClick, handleCardLike, currentUser }) {
+  const isLiked = data.likes?.some(id => id === currentUser?._id);
+  const likesCount = data.likes?.length || 0;
+
   function handleOpenCard() {
     onCardClick(data);
+  }
+
+  function handleLike(e) {
+    e.stopPropagation();
+    handleCardLike(data, isLiked);
   }
 
   return (
     <>
       <li className="card">
-        <h2 className="card__title">{data.name}</h2>
+        <div className="card__header">
+          <h2 className="card__title">{data.name}</h2>
+          <button 
+            className={`card__like-btn ${isLiked ? 'card__like-btn_active' : ''}`}
+            onClick={handleLike}
+            type="button"
+          >
+            <span className="card__like-icon">♥</span>
+            <span className="card__likes-count">{likesCount}</span>
+          </button>
+        </div>
         <img
           src={data.imageUrl}
           alt={data.name}
